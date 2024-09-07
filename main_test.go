@@ -2,42 +2,43 @@ package main
 
 import (
 	"bufio"
+	"bytes"
 	"io"
 	"os"
 	"strings"
 	"testing"
 )
 
-//func Test_isPrime(t *testing.T) {
-//	primeTests := []struct {
-//		name     string
-//		input    int
-//		expected bool
-//		msg      string
-//	}{
-//		{"negative number", -1, false, "Negative numbers are not prime, by definition"},
-//		{"zero", 0, false, "0 is not prime, by definition"},
-//		{"one", 1, false, "1 is not prime, by definition"},
-//		{"prime", 7, true, "7 is a prime number"},
-//		{"not prime", 8, false, "8 is not a prime number because it is divisible by 2"},
-//	}
-//
-//	for _, test := range primeTests {
-//		result, msg := isPrime(test.input)
-//
-//		if test.expected && !result {
-//			t.Errorf("%s expected true but got false", test.name)
-//		}
-//
-//		if !test.expected && result {
-//			t.Errorf("%s expected false but got true", test.name)
-//		}
-//
-//		if test.msg != msg {
-//			t.Errorf("%s expected %s but got %s", test.name, test.msg, msg)
-//		}
-//	}
-//}
+func Test_isPrime(t *testing.T) {
+	primeTests := []struct {
+		name     string
+		input    int
+		expected bool
+		msg      string
+	}{
+		{"negative number", -1, false, "Negative numbers are not prime, by definition"},
+		{"zero", 0, false, "0 is not prime, by definition"},
+		{"one", 1, false, "1 is not prime, by definition"},
+		{"prime", 7, true, "7 is a prime number"},
+		{"not prime", 8, false, "8 is not a prime number because it is divisible by 2"},
+	}
+
+	for _, test := range primeTests {
+		result, msg := isPrime(test.input)
+
+		if test.expected && !result {
+			t.Errorf("%s expected true but got false", test.name)
+		}
+
+		if !test.expected && result {
+			t.Errorf("%s expected false but got true", test.name)
+		}
+
+		if test.msg != msg {
+			t.Errorf("%s expected %s but got %s", test.name, test.msg, msg)
+		}
+	}
+}
 
 func Test_prompt(t *testing.T) {
 	// save a copy of the standard output
@@ -112,4 +113,15 @@ func Test_checkNumbers(t *testing.T) {
 			t.Errorf("%s: expected %s but got %s", test.name, test.expected, res)
 		}
 	}
+}
+
+func Test_readUserInput(t *testing.T) {
+	doneChan := make(chan bool)
+	var stdin bytes.Buffer
+
+	stdin.Write([]byte("1\nq\n"))
+
+	go readUserInput(&stdin, doneChan)
+	<-doneChan
+	close(doneChan)
 }
